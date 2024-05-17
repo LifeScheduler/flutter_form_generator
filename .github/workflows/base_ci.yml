@@ -1,4 +1,4 @@
-name: complete_ci
+name: base_ci
 
 on:
   push:
