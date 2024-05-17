@@ -1,12 +1,13 @@
 name: complete_ci
 
 on:
-  push:
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   verify_flutter_form_generator_package:
     name: Flutter Form Generator
-    runs-on: ubuntu-latest
+    runs-on: [windows-latest, macos-latest, ubuntu-latest]
     steps:
       - uses: actions/checkout@v4
 
