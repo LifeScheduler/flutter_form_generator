@@ -2,6 +2,9 @@ name: base_ci
 
 on:
   push:
+    branches-ignore:
+      - main
+
 
 jobs:
   verify_flutter_form_generator_package:
