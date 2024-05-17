@@ -1,3 +1,4 @@
+/// This package helps generating code for form widgets from models.
 library flutter_form_generator;
 
 /// A Calculator.
