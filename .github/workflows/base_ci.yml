@@ -1,0 +1,55 @@
+name: base_ci
+
+on:
+  push:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  verify_flutter_form_generator_package:
+    name: Flutter Form Generator
+    runs-on: [windows-latest, macos-latest, ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check broken links
+        uses: JustinBeckwith/linkinator-action@v1
+        with:
+          paths: "**/*.md"
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+
+      - name: Flutter action
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Format code
+        run: dart format --set-exit-if-changed .
+      - name: Analyze static code
+        run: flutter analyze
+      - name: Run tests
+        run: flutter test --coverage
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Making sure that code coverage is 100
+        uses: VeryGoodOpenSource/very_good_coverage@v2
+        with:
+          min_coverage: 100
+      - name: Check publish warnings
+        run: dart pub publish --dry-run
+      - name: Build example
+        run: |
+          cd example
+          flutter build appbundle --debug
+          flutter build ios --debug --no-codesign
+          flutter build web
